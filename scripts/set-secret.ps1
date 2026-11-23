@@ -16,7 +16,8 @@ else {
   $valor = [Microsoft.VisualBasic.Interaction]::InputBox("Pega el valor de $Name", "glep-setup", "")
 }
 if ([string]::IsNullOrWhiteSpace($valor)) { throw "Valor vacío, no se guarda nada." }
-$lineas = @(Get-Content $envFile -Encoding UTF8 | Where-Object { $_ -notmatch "^\s*$Name=" })
+$lineas = @(Get-Content $envFile -Encoding UTF8 | ForEach-Object { $_.TrimStart([char]0xFEFF) } | Where-Object { $_ -notmatch "^\s*$Name=" })
 $lineas += "$Name=$($valor.Trim())"
-Set-Content -Path $envFile -Value $lineas -Encoding UTF8
+# UTF-8 SIN BOM (con BOM, la primera variable del .env quedaria corrupta)
+[System.IO.File]::WriteAllText($envFile, (($lineas -join "`n") + "`n"), (New-Object System.Text.UTF8Encoding($false)))
 Write-Host "$Name guardado en $envFile (valor no mostrado)."
