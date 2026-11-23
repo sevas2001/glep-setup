@@ -1,0 +1,19 @@
+# Fragmento para <HERMES_HOME>/profiles/<perfil>/config.yaml (voz opcional).
+# Ajusta las rutas a tu máquina. Para claves tts.providers.* usa `hermes config set --force`.
+tts:
+  provider: cartesia
+  providers:
+    cartesia:
+      type: command
+      # Ruta a un python3 y al script copiado desde voice/cartesia_tts.py
+      command: python C:/Users/TU_USUARIO/.glep/cartesia_tts.py {input_path} {output_path}
+      format: wav
+      timeout: 60
+  streaming:
+    min_len: 6
+stt:
+  enabled: true
+  provider: groq
+  language: es
+auth:
+  adopt_external_logins: false   # tras `hermes -p <perfil> auth add anthropic`
